@@ -1,2 +1,2 @@
-# prost
-прост - Experimental HTTP server for DIY projects
+# прост
+Experimental HTTP server for DIY projects
