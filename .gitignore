@@ -194,3 +194,13 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+# Solution
+Prost.sln
+
+# Developer auxiliary projects
+Prost.Test01/**/*
+Prost.Test02/**/*
+Prost.Test03/**/*
+Prost.Test04/**/*
+Prost.Test05/**/*
