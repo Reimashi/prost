@@ -38,6 +38,8 @@ namespace Prost.Net
             this.listenerThread.Start();
         }
 
+        public Boolean Listening { get { return listen_flag; } }
+
         protected bool stop_flag = false;
         private void ProcessListen()
         {
@@ -62,56 +64,35 @@ namespace Prost.Net
             TcpClient client = o as TcpClient;
 
             using (StreamReader sr = new StreamReader(client.GetStream(), Encoding.ASCII))
+            using (StreamWriter sw = new StreamWriter(client.GetStream(), Encoding.ASCII))
             {
                 bool keepalive = true;
                 while (keepalive)
                 {
+                    HttpRequest request = null;
+                    HttpResponse response = null;
+
                     try
                     {
-                        keepalive = false;
-                        HttpRequest request = new HttpRequest((IPEndPoint)client.Client.RemoteEndPoint, sr);
-                        HttpResponse response = this.ProcessMethod(request);
+                        keepalive = false; // TODO: Implement keep-alive
+                        request = new HttpRequest((IPEndPoint)client.Client.RemoteEndPoint, sr);
+                        response = new HttpResponse(sw);
+
+                        foreach (HttpHandler handler in this.handlers)
+                        {
+                            if (!handler(request, response)) break;
+                        }
                     }
                     catch (ArgumentNullException r)
                     {
-                        Console.WriteLine("conexion interrumpida");
                         // Se ha perdido la conexion
+                        Console.WriteLine("conexion interrumpida");
+                        if (response != null) { response.Close(); }
                     }
                 }
             }
 
             client.Close();
-        }
-
-        protected HttpResponse ProcessMethod(HttpRequest request)
-        {
-            foreach (HttpHandler handler in this.handlers)
-            {
-                HttpResponse response = new HttpResponse();
-                switch (request.Method)
-                {
-                    case HttpMethod.Delete:
-                        if (handler.Delete(request, response)) { return response; }
-                        break;
-                    case HttpMethod.Get:
-                        if (handler.Get(request, response)) { return response; }
-                        break;
-                    case HttpMethod.Head:
-                        if (handler.Head(request, response)) { return response; }
-                        break;
-                    case HttpMethod.Patch:
-                        if (handler.Patch(request, response)) { return response; }
-                        break;
-                    case HttpMethod.Post:
-                        if (handler.Post(request, response)) { return response; }
-                        break;
-                    case HttpMethod.Put:
-                        if (handler.Put(request, response)) { return response; }
-                        break;
-                }
-            }
-
-            throw new NotImplementedException();
         }
 
         private void ProcessStop()

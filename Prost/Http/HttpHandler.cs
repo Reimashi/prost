@@ -5,15 +5,11 @@ using System.Text;
 
 namespace Prost.Http
 {
-    public delegate Boolean HttpMethodHandler(HttpRequest req, HttpResponse res);
-
-    public interface HttpHandler
-    {
-        Boolean Delete(HttpRequest req, HttpResponse res);
-        Boolean Get(HttpRequest req, HttpResponse res);
-        Boolean Head(HttpRequest req, HttpResponse res);
-        Boolean Patch(HttpRequest req, HttpResponse res);
-        Boolean Post(HttpRequest req, HttpResponse res);
-        Boolean Put(HttpRequest req, HttpResponse res);
-    }
+    /// <summary>
+    /// Handle a HTTP connection.
+    /// </summary>
+    /// <param name="req">HTTP Request data</param>
+    /// <param name="res">HTTP Response</param>
+    /// <returns>FALSE to inhibit the propagation thought the handlers and send the response inmediatly</returns>
+    public delegate bool HttpHandler(HttpRequest req, HttpResponse res);
 }

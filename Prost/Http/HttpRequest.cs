@@ -112,5 +112,8 @@ namespace Prost.Http
         public ushort ProtocolMajorVersion { get { return this.httpMajorVersion; } }
         public ushort ProtocolMinorVersion { get { return this.httpMinorVersion; } }
         public HttpMethod Method { get { return this.httpMethod; } }
+
+        // public long MaxExecutionTime
+        // public bool KeepAlive
     }
 }
