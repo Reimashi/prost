@@ -44,9 +44,12 @@
     <Compile Include="Http\HttpRequest.cs" />
     <Compile Include="Http\HttpResponse.cs" />
     <Compile Include="HttpHandlers\RouterHandler.cs" />
+    <Compile Include="Runtime\Executors.cs" />
+    <Compile Include="Runtime\ReusableThread.cs" />
+    <Compile Include="Runtime\ThreadPool.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Http\Bodies\" />
+    <Folder Include="Http\Exceptions\" />
   </ItemGroup>
 </Project>
