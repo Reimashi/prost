@@ -84,7 +84,7 @@ namespace Prost.Net
 							if (request.Finished) break;
                         }
                     }
-                    catch (ArgumentNullException r)
+                    catch (ArgumentNullException)
                     {
                         // Se ha perdido la conexion
                         Console.WriteLine("conexion interrumpida");

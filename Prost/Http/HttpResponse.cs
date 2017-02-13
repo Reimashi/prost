@@ -38,9 +38,9 @@ namespace Prost.Http
         internal void Close() { }
 
         /// <summary>
-        /// Set the HTTP Status
+		/// Set the HTTP Status
         /// </summary>
-        /// <param name="status">HTTP standard status</param>
+        /// <value>The status</value>
 		public HttpStatus Status {
 			get { return this.status; }
 			set { this.status = value; }
