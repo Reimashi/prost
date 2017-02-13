@@ -10,6 +10,5 @@ namespace Prost.Http
     /// </summary>
     /// <param name="req">HTTP Request data</param>
     /// <param name="res">HTTP Response</param>
-    /// <returns>FALSE to inhibit the propagation thought the handlers and send the response inmediatly</returns>
-    public delegate bool HttpHandler(HttpRequest req, HttpResponse res);
+    public delegate void HttpHandler(HttpRequest req, HttpResponse res);
 }

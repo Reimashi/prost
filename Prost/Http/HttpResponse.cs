@@ -41,8 +41,9 @@ namespace Prost.Http
         /// Set the HTTP Status
         /// </summary>
         /// <param name="status">HTTP standard status</param>
-        public void Status(HttpStatus status) {
-
+		public HttpStatus Status {
+			get { return this.status; }
+			set { this.status = value; }
         }
 
         /// <summary>

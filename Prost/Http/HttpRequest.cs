@@ -20,6 +20,9 @@ namespace Prost.Http
         private DoNotTrack httpDnt = DoNotTrack.DntUnknow;
         private string httpUserAgent = String.Empty;
 
+		private bool finishRequest = false;
+		public bool Finished { get { return this.finishRequest; } }
+
         internal HttpRequest(IPEndPoint client, StreamReader reader)
         {
             this.ReadHttpHeader(reader.ReadLine());
@@ -115,5 +118,12 @@ namespace Prost.Http
 
         // public long MaxExecutionTime
         // public bool KeepAlive
+
+		/// <summary>
+		/// End the request and inhibit the next handlers
+		/// </summary>
+		public void End () {
+			this.finishRequest = true;
+		}
     }
 }
