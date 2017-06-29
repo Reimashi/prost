@@ -7,9 +7,11 @@ using System.Linq;
 
 namespace Prost.Http
 {
+    public enum DoNotTrack : int { DntEnable = 1, DntUnknow = 0, DntDisable = -1 }
+
     public class HttpRequest
     {
-        public enum DoNotTrack : int { DntEnable = 1, DntUnknow = 0, DntDisable = -1 }
+        private readonly long maxExecutionTime;
 
         private ushort httpMajorVersion;
         private ushort httpMinorVersion;
@@ -18,23 +20,20 @@ namespace Prost.Http
 
         private Dictionary<string, string> httpHeaders = new Dictionary<string, string>();
         private DoNotTrack httpDnt = DoNotTrack.DntUnknow;
-        private string httpUserAgent = String.Empty;
+        private string httpUserAgent = "";
 
-        internal HttpRequest(IPEndPoint client, StreamReader reader)
+        internal HttpRequest(IPEndPoint client, StreamReader reader, long limit = 20000)
         {
-            this.ReadHttpHeader(reader.ReadLine());
-            this.ReadHeaders(reader);
-            this.FormatHeaders();
-            
-        }
+            this.maxExecutionTime = limit;
 
-        private void ReadHttpHeader(IEnumerable<char> header)
-        {
+            // Parse top header
+            IEnumerable<char> header = reader.ReadLine();
+
             char[] method = header.TakeWhile((ichar) => !HttpLinqParser.IsSpace(ichar)).ToArray();
-            switch((new String(method)).ToUpper())
+            switch ((new String(method)).ToUpper())
             {
                 case "DELETE":
-                    this.httpMethod = HttpMethod.Delete;
+                    httpMethod = HttpMethod.Delete;
                     break;
                 case "GET":
                     this.httpMethod = HttpMethod.Get;
@@ -71,10 +70,8 @@ namespace Prost.Http
                 this.httpMinorVersion = Convert.ToUInt16(Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(minor)));
             }
             else throw new Exception();
-        }
 
-        private void ReadHeaders(StreamReader reader)
-        {
+            // Parse the rest of the headers
             String line = String.Empty;
 
             do
@@ -91,19 +88,17 @@ namespace Prost.Http
                 }
             }
             while (line.Length > 0);
-        }
 
-        private void FormatHeaders()
-        {
-            foreach (KeyValuePair<string, string> header in this.httpHeaders) {
-                switch(header.Key)
+            foreach (KeyValuePair<string, string> headerline in this.httpHeaders)
+            {
+                switch (headerline.Key)
                 {
                     case "dnt":
-                        if (header.Value == "1") this.httpDnt = DoNotTrack.DntEnable;
-                        else if (header.Value == "0") this.httpDnt = DoNotTrack.DntDisable;
+                        if (headerline.Value == "1") this.httpDnt = DoNotTrack.DntEnable;
+                        else if (headerline.Value == "0") this.httpDnt = DoNotTrack.DntDisable;
                         break;
                     case "user-agent":
-                        this.httpUserAgent = header.Value;
+                        this.httpUserAgent = headerline.Value;
                         break;
                 }
             }
@@ -112,8 +107,9 @@ namespace Prost.Http
         public ushort ProtocolMajorVersion { get { return this.httpMajorVersion; } }
         public ushort ProtocolMinorVersion { get { return this.httpMinorVersion; } }
         public HttpMethod Method { get { return this.httpMethod; } }
+        public DoNotTrack DoNotTrack {  get { return this.httpDnt; } }
+        public long MaxExecutionTime { get { return this.maxExecutionTime; } }
 
-        // public long MaxExecutionTime
-        // public bool KeepAlive
+        public bool KeepAlive {  get { return false; } } // Not supported yet
     }
 }

@@ -17,13 +17,12 @@ namespace Prost.Tests.Runtime
             try
             {
                 pool.Run((obj) => { System.Threading.Thread.Sleep(200); });
+                Assert.Fail();
             }
             catch (ThreadPoolFullException)
             {
                 Assert.Pass();
             }
-
-            Assert.Fail();
         }
 
         [Test, MaxTime(1000)]

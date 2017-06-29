@@ -34,7 +34,7 @@ namespace Prost.Net
                     using (SslStream sslStream = new SslStream(client.GetStream(), false))
                     {
                         sslStream.AuthenticateAsServer(this.certificate, false, SslProtocols.Tls, false);
-                        while (!ThreadPool.QueueUserWorkItem(new WaitCallback(this.ProcessConnection), client)) ;
+                        //while (!ThreadPool.QueueUserWorkItem(new WaitCallback(this.ProcessConnection), client)) ;
                     }
                 }
             }
