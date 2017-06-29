@@ -86,10 +86,11 @@ namespace Prost.Net
 
                         foreach (HttpHandler handler in this.handlers)
                         {
-                            if (!handler(request, response)) break;
+							handler(request, response);
+							if (request.Finished) break;
                         }
                     }
-                    catch (ArgumentNullException r)
+                    catch (ArgumentNullException)
                     {
                         // Se ha perdido la conexion
                         Console.WriteLine("conexion interrumpida");

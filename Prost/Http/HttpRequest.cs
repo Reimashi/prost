@@ -22,7 +22,14 @@ namespace Prost.Http
         private DoNotTrack httpDnt = DoNotTrack.DntUnknow;
         private string httpUserAgent = "";
 
+<<<<<<< HEAD
         internal HttpRequest(IPEndPoint client, StreamReader reader, long limit = 20000)
+=======
+		private bool finishRequest = false;
+		public bool Finished { get { return this.finishRequest; } }
+
+        internal HttpRequest(IPEndPoint client, StreamReader reader)
+>>>>>>> origin/master
         {
             this.maxExecutionTime = limit;
 
@@ -110,6 +117,18 @@ namespace Prost.Http
         public DoNotTrack DoNotTrack {  get { return this.httpDnt; } }
         public long MaxExecutionTime { get { return this.maxExecutionTime; } }
 
+<<<<<<< HEAD
         public bool KeepAlive {  get { return false; } } // Not supported yet
+=======
+        // public long MaxExecutionTime
+        // public bool KeepAlive
+
+		/// <summary>
+		/// End the request and inhibit the next handlers
+		/// </summary>
+		public void End () {
+			this.finishRequest = true;
+		}
+>>>>>>> origin/master
     }
 }
